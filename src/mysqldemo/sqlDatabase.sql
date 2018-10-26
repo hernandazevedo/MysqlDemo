@@ -15,3 +15,6 @@ CREATE TABLE `livro` (
 
   INSERT INTO `livro` (titulo, preco, estoque, idgenero, ideditora) 
 values ('livro1', 20,1,1,1); 
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 
+        'root';

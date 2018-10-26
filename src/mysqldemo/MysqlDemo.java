@@ -57,10 +57,10 @@ public class MysqlDemo {
             List<LivroDto> savedList = controller.listBooks();
             
             for(LivroDto l : savedList) {
+                livro = l;
                 System.out.println("Livro que esta no banco: "+l.getTitulo());
             }
             
-            livro.setIdLivro(1L);
             if ( controller.deleteBook(livro) ) {
                  System.out.println("Livro deletado com sucesso: "+livro.getTitulo());
             } else {

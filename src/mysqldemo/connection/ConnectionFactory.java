@@ -14,7 +14,7 @@ import java.sql.SQLException;
  * @author 2018200724
  */
 public class ConnectionFactory {
-    public static final String DEFAULT_URL = "jdbc:mysql://localhost:3306/projeto5";
+    public static final String DEFAULT_URL = "jdbc:mysql://localhost:3306/projeto5?useTimezone=true&serverTimezone=UTC";
     public static final String DEFAULT_USER = "root";
     public static final String DEFAULT_PASSWORD = "root";
     
