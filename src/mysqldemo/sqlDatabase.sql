@@ -3,18 +3,14 @@ CREATE DATABASE PROJETO5;
 
 USE PROJETO5;
 
-CREATE TABLE `livro` (
-  `idlivro` int(11) NOT NULL AUTO_INCREMENT,
-  `titulo` varchar(100) NOT NULL,
-  `preco` float DEFAULT NULL,
-  `estoque` int(11) DEFAULT 0,
-  `idgenero` int(11) NOT NULL,
-  `ideditora` int(11) NOT NULL,
-  PRIMARY KEY (`idlivro`,`idgenero`,`ideditora`)
+CREATE TABLE `agenda` (
+  `idagenda` int(11) NOT NULL AUTO_INCREMENT,
+  `nome` varchar(100) NOT NULL,
+  `telefone` varchar(100) DEFAULT NULL,
+  `email` varchar(100) DEFAULT 0,
+  `endereco` character varying(100) NOT NULL,
+  PRIMARY KEY (`idagenda`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-  INSERT INTO `livro` (titulo, preco, estoque, idgenero, ideditora) 
-values ('livro1', 20,1,1,1); 
-
+ 
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 
         'root';
