@@ -6,13 +6,8 @@
 package mysqldemo;
 
 import mysqldemo.controller.CadastroController;
-import mysqldemo.connection.ConnectionFactory;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
-import mysqldemo.dto.LivroDto;
+import mysqldemo.dto.AgendaDto;
 
 /**
  *
@@ -20,51 +15,51 @@ import mysqldemo.dto.LivroDto;
  */
 public class MysqlDemo {
     
-    public static final String TEACHER_NAME_TO_FIND = "Her";
-    public static final String TEACHER_NAME_TO_INSERT = "Hernand";
-    public static final String TEACHER_NAME_NEW_VALUE = "Jose";
-    public static final String TEACHER_TITLE_TO_INSERT = "Mr";
-    public static final String SQL_QUERY = "select * from professor where nome like ?";
-    public static final String SQL_QUERY_FIND_ALL = "select * from professor";
-    
-    public static final String INSERT_QUERY = "insert into professor (nome, titulacao) values (?,?)";
-    public static final String UPDATE_QUERY = "update professor set nome = ? where nome = ?";
-    public static final String DELETE_QUERY = "delete from professor where nome = ?";
-    
+//    public static final String TEACHER_NAME_TO_FIND = "Her";
+//    public static final String TEACHER_NAME_TO_INSERT = "Hernand";
+//    public static final String TEACHER_NAME_NEW_VALUE = "Jose";
+//    public static final String TEACHER_TITLE_TO_INSERT = "Mr";
+//    public static final String SQL_QUERY = "select * from professor where nome like ?";
+//    public static final String SQL_QUERY_FIND_ALL = "select * from professor";
+//    
+//    public static final String INSERT_QUERY = "insert into professor (nome, titulacao) values (?,?)";
+//    public static final String UPDATE_QUERY = "update professor set nome = ? where nome = ?";
+//    public static final String DELETE_QUERY = "delete from professor where nome = ?";
+//    
     public static void main(String[] args) {
         
         try {
             CadastroController controller = new CadastroController();
-            LivroDto livro = new LivroDto();
-            livro.setEstoque(1L);
-            livro.setIdEditora(1L);
-            livro.setIdGenero(1L);
-            livro.setTitulo("Titulo do jose");
-            livro.setPreco(20.0);
-            if ( controller.insertBook(livro) ) {
-                 System.out.println("Livro inserido com sucesso: "+livro.getTitulo());
+            AgendaDto agenda = new AgendaDto();
+            agenda.setNome("Hernand Azevedo");
+            agenda.setTelefone("5521973448438");
+            agenda.setEmail("hernand.azevedo@gmail.com");
+            agenda.setEndereco("R. de Seila numero 10, casa 2");
+            
+            if ( controller.insert(agenda) ) {
+                 System.out.println("Livro inserido com sucesso: "+agenda);
             } else {
-                 System.out.println("Erro ao inserir livro: "+livro.getTitulo());
+                 System.out.println("Erro ao inserir livro: "+agenda);
             }
             
-            livro.setIdLivro(1L);
-            if ( controller.updateBook(livro) ) {
-                 System.out.println("Livro atualizado com sucesso: "+livro.getTitulo());
+            agenda.setIdAgenda(1L);
+            if ( controller.update(agenda) ) {
+                 System.out.println("Livro atualizado com sucesso: "+agenda);
             } else {
-                 System.out.println("Erro ao atualizado livro: "+livro.getTitulo());
+                 System.out.println("Erro ao atualizado livro: "+agenda);
             }
             
-            List<LivroDto> savedList = controller.listBooks();
+            List<AgendaDto> savedList = controller.listAll();
             
-            for(LivroDto l : savedList) {
-                livro = l;
-                System.out.println("Livro que esta no banco: "+l.getTitulo());
+            for(AgendaDto l : savedList) {
+                agenda = l;
+                System.out.println("Livro que esta no banco: "+l.getNome());
             }
             
-            if ( controller.deleteBook(livro) ) {
-                 System.out.println("Livro deletado com sucesso: "+livro.getTitulo());
+            if ( controller.delete(agenda) ) {
+                 System.out.println("Livro deletado com sucesso: "+agenda);
             } else {
-                 System.out.println("Erro ao deletar livro: "+livro.getTitulo());
+                 System.out.println("Erro ao deletar livro: "+agenda);
             }
             
 //            testInsertWithPreparedStatement(TEACHER_NAME_TO_INSERT, TEACHER_TITLE_TO_INSERT);          
@@ -87,92 +82,92 @@ public class MysqlDemo {
         }
     }
     
-    private static void testSelectWithPreparedStatement(String nameToFind) throws SQLException {
-        Connection conn = null;
-        try{
-            conn = ConnectionFactory.getInstance().getConnection();
-            PreparedStatement ps;
-            if(nameToFind != null) {
-                System.out.println("Buscando por nome: "+nameToFind);
-                ps = conn.prepareStatement(SQL_QUERY);            
-                ps.setString(1, nameToFind + "%");            
-            } else {
-                System.out.println("Buscando por todos os registros");
-                ps = conn.prepareStatement(SQL_QUERY_FIND_ALL);
-            }
-            
-            ResultSet rs = ps.executeQuery();
-            
-            while(rs.next()) {    
-                System.out.println("nome: "+rs.getString("nome"));
-                System.out.println("nome: "+rs.getString("titulacao"));
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (conn != null) conn.close();
-        }
-    }
-    
-     private static void testInsertWithPreparedStatement(String nameToInsert, String titleToInsert) throws SQLException {
-        Connection conn = null;
-        try{
-            conn = ConnectionFactory.getInstance().getConnection();
-            PreparedStatement ps = conn.prepareStatement(INSERT_QUERY);            
-            ps.setString(1, nameToInsert); 
-            ps.setString(2, titleToInsert); 
-            
-            int affectedLines = ps.executeUpdate();
-            if(affectedLines > 0) {
-                System.out.println(nameToInsert + " Inserido com sucesso");
-            } else {
-                System.out.println("Erro ao inserir "+ nameToInsert);
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (conn != null) conn.close();
-        }
-    }
-     
-     private static void testUpdateWithPreparedStatement(String oldName,String newName) throws SQLException {
-        Connection conn = null;
-        try{
-            conn = ConnectionFactory.getInstance().getConnection();
-            PreparedStatement ps = conn.prepareStatement(UPDATE_QUERY);            
-            ps.setString(1, newName); 
-            ps.setString(2, oldName); 
-            
-            int affectedLines = ps.executeUpdate();
-            if(affectedLines > 0) {
-                System.out.println(oldName+ " Atualizado com sucesso para " + newName);
-            } else {
-                System.out.println("Erro ao Atualizar " + oldName);
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (conn != null) conn.close();
-        }
-    }
-     
-     private static void testDeleteWithPreparedStatement(String nameToDelete) throws SQLException {
-        Connection conn = null;
-        try{
-            conn = ConnectionFactory.getInstance().getConnection();
-            PreparedStatement ps = conn.prepareStatement(DELETE_QUERY);            
-            ps.setString(1, nameToDelete); 
-            
-            int affectedLines = ps.executeUpdate();
-            if(affectedLines > 0) {
-                System.out.println(nameToDelete + " Deletado com sucesso");
-            } else {
-                System.out.println("Erro ao Deletar "+ nameToDelete);
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (conn != null) conn.close();
-        }
-    }
+//    private static void testSelectWithPreparedStatement(String nameToFind) throws SQLException {
+//        Connection conn = null;
+//        try{
+//            conn = ConnectionFactory.getInstance().getConnection();
+//            PreparedStatement ps;
+//            if(nameToFind != null) {
+//                System.out.println("Buscando por nome: "+nameToFind);
+//                ps = conn.prepareStatement(SQL_QUERY);            
+//                ps.setString(1, nameToFind + "%");            
+//            } else {
+//                System.out.println("Buscando por todos os registros");
+//                ps = conn.prepareStatement(SQL_QUERY_FIND_ALL);
+//            }
+//            
+//            ResultSet rs = ps.executeQuery();
+//            
+//            while(rs.next()) {    
+//                System.out.println("nome: "+rs.getString("nome"));
+//                System.out.println("nome: "+rs.getString("titulacao"));
+//            }
+//        } catch(Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (conn != null) conn.close();
+//        }
+//    }
+//    
+//     private static void testInsertWithPreparedStatement(String nameToInsert, String titleToInsert) throws SQLException {
+//        Connection conn = null;
+//        try{
+//            conn = ConnectionFactory.getInstance().getConnection();
+//            PreparedStatement ps = conn.prepareStatement(INSERT_QUERY);            
+//            ps.setString(1, nameToInsert); 
+//            ps.setString(2, titleToInsert); 
+//            
+//            int affectedLines = ps.executeUpdate();
+//            if(affectedLines > 0) {
+//                System.out.println(nameToInsert + " Inserido com sucesso");
+//            } else {
+//                System.out.println("Erro ao inserir "+ nameToInsert);
+//            }
+//        } catch(Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (conn != null) conn.close();
+//        }
+//    }
+//     
+//     private static void testUpdateWithPreparedStatement(String oldName,String newName) throws SQLException {
+//        Connection conn = null;
+//        try{
+//            conn = ConnectionFactory.getInstance().getConnection();
+//            PreparedStatement ps = conn.prepareStatement(UPDATE_QUERY);            
+//            ps.setString(1, newName); 
+//            ps.setString(2, oldName); 
+//            
+//            int affectedLines = ps.executeUpdate();
+//            if(affectedLines > 0) {
+//                System.out.println(oldName+ " Atualizado com sucesso para " + newName);
+//            } else {
+//                System.out.println("Erro ao Atualizar " + oldName);
+//            }
+//        } catch(Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (conn != null) conn.close();
+//        }
+//    }
+//     
+//     private static void testDeleteWithPreparedStatement(String nameToDelete) throws SQLException {
+//        Connection conn = null;
+//        try{
+//            conn = ConnectionFactory.getInstance().getConnection();
+//            PreparedStatement ps = conn.prepareStatement(DELETE_QUERY);            
+//            ps.setString(1, nameToDelete); 
+//            
+//            int affectedLines = ps.executeUpdate();
+//            if(affectedLines > 0) {
+//                System.out.println(nameToDelete + " Deletado com sucesso");
+//            } else {
+//                System.out.println("Erro ao Deletar "+ nameToDelete);
+//            }
+//        } catch(Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (conn != null) conn.close();
+//        }
+//    }
 }

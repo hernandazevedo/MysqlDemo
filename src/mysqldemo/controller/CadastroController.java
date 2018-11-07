@@ -6,16 +6,15 @@
 package mysqldemo.controller;
 
 import mysqldemo.exception.DatabaseException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mysqldemo.dao.GenericDao;
-import mysqldemo.dao.LivroDaoImpl;
-import mysqldemo.dto.LivroDto;
-import mysqldemo.entity.LivroEntity;
-import mysqldemo.mapper.LivroMapper;
+import mysqldemo.dao.AgendaDaoImpl;
+import mysqldemo.dto.AgendaDto;
+import mysqldemo.entity.AgendaEntity;
+import mysqldemo.mapper.AgendaMapper;
 
 /**
  *
@@ -23,46 +22,46 @@ import mysqldemo.mapper.LivroMapper;
  */
 public class CadastroController {
 
-    private final GenericDao<LivroEntity> livroDao;
+    private final GenericDao<AgendaEntity> livroDao;
 
     public CadastroController() {
         //FIXME inject the daos
-        livroDao = new LivroDaoImpl();
+        livroDao = new AgendaDaoImpl();
     }
     
-    public Boolean insertBook(LivroDto livro) {
+    public Boolean insert(AgendaDto livro) {
         try {
-            return livroDao.insert(new LivroMapper().convertToEntity(livro)) > 0;
+            return livroDao.insert(new AgendaMapper().convertToEntity(livro)) > 0;
         } catch (DatabaseException e) {
             Logger.getLogger(CadastroController.class.getName()).log(Level.SEVERE, null, e);
         }
         return false;
     }
     
-    public Boolean updateBook(LivroDto livro) {
+    public Boolean update(AgendaDto livro) {
         try {
-            return livroDao.update(new LivroMapper().convertToEntity(livro)) > 0;
+            return livroDao.update(new AgendaMapper().convertToEntity(livro)) > 0;
         } catch (DatabaseException e) {
             Logger.getLogger(CadastroController.class.getName()).log(Level.SEVERE, null, e);
         }
         return false;
     }
     
-    public Boolean deleteBook(LivroDto livro) {
+    public Boolean delete(AgendaDto livro) {
         try {
-            return livroDao.delete(new LivroMapper().convertToEntity(livro)) > 0;
+            return livroDao.delete(new AgendaMapper().convertToEntity(livro)) > 0;
         } catch (DatabaseException e) {
             Logger.getLogger(CadastroController.class.getName()).log(Level.SEVERE, null, e);
         }
         return false;
     }
     
-    public List<LivroDto> listBooks() {       
+    public List<AgendaDto> listAll() {       
         try {
-            List<LivroEntity> entityList = livroDao.list();   
+            List<AgendaEntity> entityList = livroDao.list();   
             
             if(entityList != null && !entityList.isEmpty())
-                return new LivroMapper().convertToDtoList(entityList);
+                return new AgendaMapper().convertToDtoList(entityList);
         } catch (DatabaseException e) {
             Logger.getLogger(CadastroController.class.getName()).log(Level.SEVERE, null, e);
         }
