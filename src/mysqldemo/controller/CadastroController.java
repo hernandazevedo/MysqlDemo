@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mysqldemo.dao.GenericDao;
 import mysqldemo.dao.AgendaDaoImpl;
+import mysqldemo.dao.AgendaMongoDaoImpl;
 import mysqldemo.dto.AgendaDto;
 import mysqldemo.entity.AgendaEntity;
 import mysqldemo.mapper.AgendaMapper;
@@ -22,16 +23,21 @@ import mysqldemo.mapper.AgendaMapper;
  */
 public class CadastroController {
 
-    private final GenericDao<AgendaEntity> livroDao;
+    private final GenericDao<AgendaEntity> agendaDao;
 
-    public CadastroController() {
+    public enum DBEnum {
+        MONGO,
+        MYSQL
+    }
+    
+    public CadastroController(DBEnum dbEnum) {
         //FIXME inject the daos
-        livroDao = new AgendaDaoImpl();
+        agendaDao = dbEnum == DBEnum.MYSQL ? new AgendaDaoImpl() : new AgendaMongoDaoImpl();
     }
     
     public Boolean insert(AgendaDto livro) {
         try {
-            return livroDao.insert(new AgendaMapper().convertToEntity(livro)) > 0;
+            return agendaDao.insert(new AgendaMapper().convertToEntity(livro)) > 0;
         } catch (DatabaseException e) {
             Logger.getLogger(CadastroController.class.getName()).log(Level.SEVERE, null, e);
         }
@@ -40,7 +46,7 @@ public class CadastroController {
     
     public Boolean update(AgendaDto livro) {
         try {
-            return livroDao.update(new AgendaMapper().convertToEntity(livro)) > 0;
+            return agendaDao.update(new AgendaMapper().convertToEntity(livro)) > 0;
         } catch (DatabaseException e) {
             Logger.getLogger(CadastroController.class.getName()).log(Level.SEVERE, null, e);
         }
@@ -49,7 +55,7 @@ public class CadastroController {
     
     public Boolean delete(AgendaDto livro) {
         try {
-            return livroDao.delete(new AgendaMapper().convertToEntity(livro)) > 0;
+            return agendaDao.delete(new AgendaMapper().convertToEntity(livro)) > 0;
         } catch (DatabaseException e) {
             Logger.getLogger(CadastroController.class.getName()).log(Level.SEVERE, null, e);
         }
@@ -58,7 +64,7 @@ public class CadastroController {
     
     public List<AgendaDto> listAll() {       
         try {
-            List<AgendaEntity> entityList = livroDao.list();   
+            List<AgendaEntity> entityList = agendaDao.list();   
             
             if(entityList != null && !entityList.isEmpty())
                 return new AgendaMapper().convertToDtoList(entityList);
